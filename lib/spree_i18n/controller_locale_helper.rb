@@ -11,18 +11,16 @@ module SpreeI18n
       private
 
       # Overrides the Spree::Core::ControllerHelpers::Common logic so that only
-      # supported locales defined by SpreeI18n::Config.supported_locales can
+      # supported locales defined by SpreeI18n::Config.available_locales can
       # actually be set
       def set_user_language
-        # params[:locale] can be added by routing-filter gem
-        I18n.locale = \
-          if params[:locale] && Config.available_locales.include?(params[:locale].to_sym)
-            params[:locale]
-          elsif respond_to?(:config_locale, true) && !config_locale.blank?
-            config_locale
-          else
-            Rails.application.config.i18n.default_locale || I18n.default_locale
-          end
+        I18n.locale = if session.key?(:locale) && Config.available_locales.include?(session[:locale].to_sym)
+          session[:locale]
+        elsif respond_to?(:config_locale, true) && !config_locale.blank?
+          config_locale
+        else
+          Rails.application.config.i18n.default_locale || I18n.default_locale
+        end
       end
     end
   end

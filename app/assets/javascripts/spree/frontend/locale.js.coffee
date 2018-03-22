@@ -5,5 +5,11 @@ Spree.fetch_locales = ->
       $('#main-nav-bar > .navbar-right').append(data)
 
 $ ->
-  $('body').on 'change', '#locale-select select', ->
-    $(this).parents('form').submit()
+  $('#locale-select select').change ->
+    $.ajax(
+      type: 'POST'
+      url: '/locale/set'
+      data:
+        locale: $(this).val()
+    ).done ->
+      window.location.reload()
